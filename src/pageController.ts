@@ -53,7 +53,6 @@ export default async function scraperController(
   }
 }
 
-
 async function ensureDataDir() {
   const dataDir = path.join(process.cwd(), "data");
   await fs.mkdir(dataDir, { recursive: true });
@@ -110,7 +109,6 @@ function csvEscape(value: string): string {
 function toCsv(products: Product[]): string {
   const lines: string[] = [];
 
-  // Cabeçalho
   lines.push(HEADERS.join(",")); 
 
   for (const product of products) {

@@ -240,7 +240,6 @@ export async function extractProductSpecs(
   }
 }
 
-
 export async function enrichProductWithDetails(
   browser: Browser,
   product: Product
