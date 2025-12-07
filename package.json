@@ -1,21 +1,31 @@
 {
-  "name": "desafio-",
+  "name": "desafio-bgc-bestsellers",
   "version": "1.0.0",
-  "description": "",
+  "description": "Desafio BGC Brasil - Web Scraping + API Serverless com AWS",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx src/index.ts"
+    "dev": "tsx src/index.ts",
+    "deploy": "serverless deploy",
+    "remove": "serverless remove",
+    "logs:getProducts": "serverless logs -f getProducts -t",
+    "import:dynamo": "tsx src/importToDynamo.ts"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
     "@tsconfig/node-lts": "^24.0.0",
+    "@types/aws-lambda": "^8.10.159",
     "@types/node": "^24.10.1",
+    "esbuild": "^0.24.0",
+    "serverless": "^3.40.0",
+    "serverless-esbuild": "^1.56.1",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3"
   },
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.946.0",
+    "@aws-sdk/lib-dynamodb": "^3.946.0",
     "axios": "^1.13.2",
     "puppeteer": "^24.32.0"
   }
