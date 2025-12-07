@@ -1,0 +1,59 @@
+openapi: 3.0.3
+info:
+  title: Desafio Estágio em Desenvolvimento BGC Brasil
+  version: 1.0.0
+  description: API REST serverless que retorna os 3 produtos mais vendidos extraídos da Amazon, da seção "Mais Vendidos na Cozinha"
+
+servers:
+  - url: https://m3o0ml93a4.execute-api.us-east-1.amazonaws.com
+
+paths:
+  /products:
+    get:
+      summary: Listar os 3 produtos mais vendidos
+      tags:
+        - Produtos
+      responses:
+        '200':
+          description: Lista de produtos retornada com sucesso
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        price:
+          type: string
+        url:
+          type: string
+        paymentConditions:
+          type: string
+          nullable: true
+        brand:
+          type: string
+          nullable: true
+        color:
+          type: string
+          nullable: true
+        material:
+          type: string
+          nullable: true
+        capacity:
+          type: string
+          nullable: true
+        dimensions:
+          type: string
+          nullable: true
+        specialFeatures:
+          type: string
+          nullable: true
