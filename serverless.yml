@@ -1,0 +1,60 @@
+service: desafio-bgc-bestsellers
+
+frameworkVersion: "3"
+
+plugins:
+  - serverless-esbuild
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: us-east-1
+  stage: dev
+
+  environment:
+    PRODUCTS_TABLE: ${self:custom.productsTableName}
+
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - dynamodb:Scan
+          Resource:
+            - Fn::GetAtt:
+                - ProductsTable
+                - Arn
+
+custom:
+  productsTableName: ${self:service}-products-${sls:stage}
+
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    target: node18
+    platform: node
+    concurrency: 10
+
+functions:
+  getProducts:
+    handler: src/handlers/getProducts.handler
+    events:
+      - httpApi:
+          path: /products
+          method: get
+
+resources:
+  Resources:
+    ProductsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.productsTableName}
+        BillingMode: PAY_PER_REQUEST  
+        AttributeDefinitions:
+          - AttributeName: id
+            AttributeType: S
+        KeySchema:
+          - AttributeName: id
+            KeyType: HASH
+
