@@ -121,7 +121,7 @@ export async function extractTopProducts(
           if (wholeEl) {
             const symbol = symbolEl?.textContent?.trim() || "R$";
             const wholeRaw = wholeEl.textContent || "";
-            const whole = wholeRaw.replace(/\D/g, ""); // só dígitos
+            const whole = wholeRaw.replace(/\D/g, ""); 
             const fractionRaw = (fractionEl?.textContent || "").trim();
             const fraction = fractionRaw.replace(/\D/g, "");
 
