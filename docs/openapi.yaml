@@ -28,8 +28,6 @@ components:
     Product:
       type: object
       properties:
-        id:
-          type: string
         title:
           type: string
         price:
