@@ -5,6 +5,7 @@ Projeto desenvolvido como parte do processo seletivo de estágio em desenvolvime
 
 - [Objetivo do Projeto](#objetivo-do-projeto)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
+- [Arquitetura da Solução](#arquitetura-da-solução)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Configuração do Ambiente](#configuração-do-ambiente)
 - [Execução do Web Scraper](#execução-do-web-scraper)
@@ -27,37 +28,48 @@ Criar um sistema para:
 
 ## Tecnologias Utilizadas
 
-### Backend / Scraper
-- **Node.js**
-- **TypeScript**
-- **Puppeteer**
-- **TSX**
+| Categoria | Tecnologias |
+|----------|-------------|
+| **Backend / Scraper** | Node.js, TypeScript, Puppeteer, TSX |
+| **AWS** | Lambda, API Gateway, DynamoDB, IAM, CloudFormation |
 
-### AWS
-- **Lambda**
-- **API Gateway**
-- **DynamoDB**
-- **IAM**
-- **CloudFormation**
+
+## Arquitetura da Solução
+
+1. Puppeteer coleta os dados da página de mais vendidos da Amazon  
+2. Os dados são salvos em `products.json` e `products.csv`  
+3. O script `importToDynamo.ts` envia os dados para o DynamoDB  
+4. A função Lambda `getProducts` lê do DynamoDB  
+5. API Gateway expõe a rota pública GET `/products`  
 
 ## Estrutura do Projeto
-```
-/data
-  ├── products.json        → Arquivo JSON dos produtos extraídos
-  ├── products.csv         → Arquivo CSV dos produtos extraídos
 
-/src
-  ├── browser.ts           → Inicializar o navegador Puppeteer
-  ├── pageScraper.ts       → Funções do processo de extração de dados
-  ├── pageController.ts    → Organizar a extração
-  ├── fileExporter.ts      → Criar os arquivos de saída
-  ├── getProducts.ts       → Função Lambda (GET /products)
-  ├── importToDynamo.ts    → Inserir no DynamoDB
-  ├── index.ts             → Fluxo principal
+```bash
+/.serverless              # Serverless Framework (deploy)
+data/
+  ├── products.json       # Dados dos produtos em formato JSON
+  └── products.csv        # Dados dos produtos em formato CSV
 
-serverless.yml             → Arquitetura AWS
-package.json               → Scripts e dependências
-tsconfig.json              → Configuração TypeScript
+docs/
+  └── openapi.yaml        # Documentação da API 
+
+node_modules/             # Dependências instaladas pelo NPM
+
+src/
+  ├── handlers/
+  │   └── getProducts.ts  # Handler Lambda da rota GET /products
+  ├── browser.ts          # Inicializa o Puppeteer
+  ├── fileExporter.ts     # Exporta dados para JSON/CSV
+  ├── importToDynamo.ts   # Importa os dados para o DynamoDB
+  ├── index.ts            # Fluxo principal do Web Scraper
+  ├── pageController.ts   # Orquestra o processo de scraping
+  └── pageScraper.ts      # Funções de extração de dados da Amazon
+
+serverless.yml            # Configuração da infraestrutura Serverless na AWS
+package.json              # Scripts e dependências do projeto
+package-lock.json         # Lockfile das dependências
+tsconfig.json             # Configuração do TypeScript
+README.md                 # Documentação do projeto
 ```
 
 ## Configuração do Ambiente
@@ -88,8 +100,8 @@ npx tsc --init
   "dev": "tsx src/index.ts",
   "deploy": "serverless deploy",
   "remove": "serverless remove",
-  "import:dynamo": "tsx src/importToDynamo.ts",
   "logs:getProducts": "serverless logs -f getProducts"
+  "import:dynamo": "tsx src/importToDynamo.ts",
 }
 ```
 
@@ -152,7 +164,7 @@ curl https://m3o0ml93a4.execute-api.us-east-1.amazonaws.com/products
 
 1. Abrir **AWS Lambda**
 2. Selecionar `getProducts`
-3. Criar evento `{}`
+3. Criar evento 
 4. Testar
 
 ## Remoção da Infraestrutura
